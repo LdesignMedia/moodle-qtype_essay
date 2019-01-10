@@ -47,7 +47,7 @@ class qtype_essay_renderer extends qtype_renderer {
         /** @var \qtype_essay_renderer $responseoutput * */
         $responseoutput = $question->get_format_renderer($this->page);
 
-        if ($PAGE->url->get_path() == '/mod/quiz/review.php' && has_capability('mod/quiz:grade', $PAGE->context)) {
+        if (stristr($PAGE->url->get_path(), '/mod/quiz/review.php') && has_capability('mod/quiz:grade', $PAGE->context)) {
 
             // Set step value.
             $options->readonly = false;
@@ -282,7 +282,7 @@ class qtype_essay_format_editor_renderer extends plugin_renderer_base {
 
         $output = '';
 
-        $adminreview = $PAGE->url->get_path() == '/mod/quiz/review.php' &&
+        $adminreview = stristr($PAGE->url->get_path(), '/mod/quiz/review.php') &&
             has_capability('mod/quiz:grade', $PAGE->context);
 
         if ($adminreview) {
@@ -291,21 +291,25 @@ class qtype_essay_format_editor_renderer extends plugin_renderer_base {
             if (($data = data_submitted()) != false) {
                 $data = $qa->get_all_submitted_qt_vars($data);
 
-                // Update summary.
-                $DB->update_record('question_attempts', (object)[
-                    'id' => $qa->get_database_id(),
-                    'responsesummary' => $data['answer'],
-                ]);
+                if(!empty($data['answer'])){
 
-                // Update attempt data.
-                $id = $DB->get_field('question_attempt_step_data', 'id',
-                    ['attemptstepid' => $step->get_id(), 'name' => 'answer']);
-
-                if($id) {
-                    $DB->update_record('question_attempt_step_data', (object)[
-                        'id' => $id,
-                        'value' => $data['answer'],
+                    // Update summary.
+                    $DB->update_record('question_attempts', (object)[
+                        'id' => $qa->get_database_id(),
+                        'responsesummary' => $data['answer'],
                     ]);
+
+                    // Update attempt data.
+                    $id = $DB->get_field('question_attempt_step_data', 'id',
+                        ['attemptstepid' => $step->get_id(), 'name' => 'answer']);
+
+                    if ($id) {
+
+                        $DB->update_record('question_attempt_step_data', (object)[
+                            'id' => $id,
+                            'value' => $data['answer'],
+                        ]);
+                    }
                 }
             }
 
@@ -328,7 +332,7 @@ class qtype_essay_format_editor_renderer extends plugin_renderer_base {
         ]);
 
         $output .= html_writer::tag('div', html_writer::tag('textarea', s($response),
-            ['id' => $id, 'name' => $inputname, 'rows' => $lines, 'cols' => 60 , 'spellcheck' => 'false']));
+            ['id' => $id, 'name' => $inputname, 'rows' => $lines, 'cols' => 60, 'spellcheck' => 'false']));
 
         $output .= html_writer::start_tag('div');
         if (count($formats) == 1) {
