@@ -353,10 +353,10 @@ class qtype_essay_format_editor_renderer extends plugin_renderer_base {
 
         $output .= html_writer::end_tag('div');
         if ($adminreview) {
-            $output .= html_writer::tag('input', '', [
-                'type' => 'submit',
-                'value' => 'Submit',
-            ]);
+//            $output .= html_writer::tag('input', '', [
+//                'type' => 'submit',
+//                'value' => 'Submit',
+//            ]);
             $output .= html_writer::end_tag('form');
         }
 

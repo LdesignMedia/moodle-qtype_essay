@@ -23,26 +23,39 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 defined('MOODLE_INTERNAL') || die();
-
 
 /**
  * Checks file access for essay questions.
  *
  * @package  qtype_essay
  * @category files
- * @param stdClass $course course object
- * @param stdClass $cm course module object
- * @param stdClass $context context object
- * @param string $filearea file area
- * @param array $args extra arguments
- * @param bool $forcedownload whether or not force download
- * @param array $options additional options affecting the file serving
+ *
+ * @param stdClass $course        course object
+ * @param stdClass $cm            course module object
+ * @param stdClass $context       context object
+ * @param string   $filearea      file area
+ * @param array    $args          extra arguments
+ * @param bool     $forcedownload whether or not force download
+ * @param array    $options       additional options affecting the file serving
+ *
  * @return bool
+ * @throws coding_exception
  */
-function qtype_essay_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=array()) {
+function qtype_essay_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = []) {
     global $CFG;
     require_once($CFG->libdir . '/questionlib.php');
     question_pluginfile($course, $context, 'qtype_essay', $filearea, $args, $forcedownload, $options);
+}
+
+function qtype_essay_before_http_headers() {
+    global $PAGE;
+    if (!empty($PAGE->cm->modname) &&
+        $PAGE->cm->modname == 'quiz' &&
+        stristr($PAGE->url->get_path(), '/mod/quiz/review.php') &&
+        has_capability('mod/quiz:grade', $PAGE->context)
+
+    ) {
+        $PAGE->requires->js_call_amd('qtype_essay/saveall', 'initialise', [[]]);
+    }
 }
