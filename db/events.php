@@ -15,19 +15,21 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version information for the essay question type.
  *
- * @package    qtype
- * @subpackage essay
- * @copyright  2005 Mark Nielsen
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
+ *
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ *
+ * @package   moodle-qtype_essay
+ * @copyright 2019-01-18 MFreak.nl
+ * @author    Luuk Verhoeven
+ **/
 
 defined('MOODLE_INTERNAL') || die();
-
-$plugin->component = 'qtype_essay';
-$plugin->version   = 2019011801;
-
-$plugin->requires  = 2018040800;
-
-$plugin->maturity  = MATURITY_STABLE;
+$observers = [
+    [
+        'eventname' => '\mod_quiz\event\attempt_submitted',
+        'includefile' => '/question/qtype/essay/classes/observer.php',
+        'callback' => 'quiz_attempt_submitted_handler',
+        'internal' => false,
+    ],
+];

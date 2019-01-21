@@ -55,7 +55,9 @@ class qtype_essay_question extends question_with_responses {
     /** @var array The string array of file types accepted upon file submission. */
     public $filetypeslist;
 
+
     public function make_behaviour(question_attempt $qa, $preferredbehaviour) {
+        // Shouldn't be here but workarround.
         return question_engine::make_behaviour('manualgraded', $qa, $preferredbehaviour);
     }
 

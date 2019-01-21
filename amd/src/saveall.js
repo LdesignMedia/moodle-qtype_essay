@@ -115,16 +115,40 @@ define(['jquery'], function ($) {
         '}';
 
     var module = {
-        init          : function () {
-            console.log('qtype saveall v1.0');
+
+        /**
+         * Load inline form editors
+         */
+        comment_grade: function () {
+
+            $('.manualgraded .content div.comment').each(function (e) {
+                var $el = $(this);
+                var commentlink = $el.find('.commentlink a').attr('href');
+
+                $.ajax({
+                    'type': 'get',
+                    'url' : commentlink.replace('/mod/quiz/', '/question/type/essay/'),
+                }).done(function (response) {
+                    $form = $(response);
+                    $form.find('.info, .qtext, .history , .accesshide, .ablock').remove();
+                    $form.appendTo($el);
+                });
+            });
+        },
+
+        init: function () {
+            console.log('qtype saveall v1.1');
+
+            this.comment_grade();
 
             $('a.mod_quiz-next-nav').on('click', function (e) {
                 e.preventDefault();
-                $('body').append('<style>'+style+'</style><div class="loading">Loading&#8230;</div>');
+                $('body').append('<style>' + style + '</style><div class="loading">Loading&#8230;</div>');
 
                 var href = $(this).attr('href');
                 $(document).ajaxStop(function () {
                     window.location = href;
+                    // window.location.reload();
                 });
 
                 $('#page form').each(function (e) {
@@ -138,7 +162,7 @@ define(['jquery'], function ($) {
                         console.log('Completed');
                     }).fail(function (data) {
                         // Optionally alert the user of an error here...
-                        console.log('Failed');
+                        console.log('Failed', data);
                     });
                 });
             })
