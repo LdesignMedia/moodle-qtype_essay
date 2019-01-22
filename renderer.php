@@ -566,7 +566,7 @@ class qtype_essay_format_plain_renderer extends plugin_renderer_base {
     }
 
     public function response_area_read_only($name, $qa, $step, $lines, $context) {
-        return $this->textarea($step->get_qt_var($name), $lines, ['readonly' => 'readonly']);
+        return $this->textarea($step->get_qt_var($name), $lines, ['readonly' => 'readonly' , 'spellcheck' => 'false']);
     }
 
     public function response_area_input($name, $qa, $step, $lines, $context) {
