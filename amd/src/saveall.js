@@ -142,6 +142,9 @@ define(['jquery'], function ($) {
             this.comment_grade();
 
             $('a.mod_quiz-next-nav').on('click', function (e) {
+                // Fix issue confirming exit.
+                window.onbeforeunload = null;
+
                 e.preventDefault();
                 $('body').append('<style>' + style + '</style><div class="loading">Loading&#8230;</div>');
 
